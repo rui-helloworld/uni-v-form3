@@ -10,7 +10,7 @@
 
 <template>
   <el-container class="main-container full-height">
-    <el-header class="main-header">
+    <el-header class="main-header" v-if="false">
       <div class="float-left main-title">
         <img src="../../assets/vform-logo.png" @click="openHome">
         <span class="bold">VForm 3</span> {{i18nt('application.productTitle')}} <span class="version-span">Ver {{vFormVersion}}</span></div>
