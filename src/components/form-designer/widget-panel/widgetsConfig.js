@@ -217,7 +217,7 @@ export const basicFields = [
       max: 100000000000,
       precision: 0,
       step: 1,
-      controlsPosition: 'right',
+      controlsPosition: 'none', // 默认隐藏控制按钮
       //-------------------
       onCreated: '',
       onMounted: '',

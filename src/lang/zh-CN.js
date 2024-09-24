@@ -35,7 +35,7 @@ export default {
 
       input:          '单行输入',
       textarea:       '多行输入',
-      number:         '计数器',
+      number:         '数字输入',
       radio:          '单选项',
       checkbox:       '多选项',
       select:         '下拉选项',

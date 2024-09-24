@@ -2,7 +2,7 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-input-number ref="fieldEditor" v-model="fieldModel" class="full-width-input"
+    <el-input-number ref="fieldEditor" v-model="fieldModel" :class="{'full-width-input': true, 'hide-controls': field.options.controlsPosition === 'none'}"
                      :disabled="field.options.disabled"
                      :size="widgetSize" :controls-position="field.options.controlsPosition"
                      :placeholder="field.options.placeholder"
@@ -98,5 +98,10 @@
   .full-width-input {
     width: 100% !important;
   }
-
+  :deep(.hide-controls){
+    .el-input-number__increase,
+    .el-input-number__decrease{
+      display: none;
+    }
+  }
 </style>
