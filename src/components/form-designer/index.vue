@@ -33,7 +33,7 @@
     </el-header>
 
     <el-container>
-      <el-aside class="side-panel">
+      <el-aside class="side-panel" v-if="false">
         <widget-panel :designer="designer" />
       </el-aside>
 
