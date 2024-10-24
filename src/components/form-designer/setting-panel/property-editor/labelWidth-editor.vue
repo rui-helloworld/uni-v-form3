@@ -21,5 +21,7 @@
 </script>
 
 <style scoped>
-
+.hide-spin-button .el-input-number.el-input__inner{
+  text-align: center !important;
+}
 </style>

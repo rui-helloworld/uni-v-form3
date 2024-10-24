@@ -291,7 +291,7 @@
     position: relative;
 
     :deep(.el-form-item__label) {
-      white-space: nowrap;
+      white-space: normal;
       text-overflow: ellipsis;
     }
 
