@@ -55,5 +55,8 @@
 </script>
 
 <style lang="scss" scoped>
-
+// .grid-container{
+//   border-right: 1px solid #000000;
+//   border-bottom: 1px solid #000000;
+// }
 </style>

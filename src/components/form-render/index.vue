@@ -12,7 +12,7 @@
   <el-form :label-position="labelPosition" :size="size" :class="[customClass]" class="render-form"
            :label-width="labelWidth" :validate-on-rule-change="false"
            :model="formDataModel" ref="renderForm"
-           @submit.prevent>
+           @submit.prevent :disabled="disabled">
     <template v-for="(widget, index) in widgetList">
       <template v-if="'container' === widget.category">
         <component :is="getContainerWidgetName(widget)" :widget="widget" :key="widget.id" :parent-list="widgetList"
@@ -105,6 +105,7 @@
         formId: null,  //表单唯一Id，用于区分页面上的多个v-form-render组件！！
 
         externalComponents:  {},  //外部组件实例集合
+        disabled: false,  //是否禁用表单
       }
     },
     computed: {
@@ -270,7 +271,21 @@
             this.formDataModel[wItem.options.name] = wItem.options.defaultValue
           } else {
             let initialValue = this.formData[wItem.options.name]
+            if(wItem.options.unit){
+              switch (wItem.options.unit){
+                case 'one':
+                  this.formDataModel[wItem.options.name] = deepClone(initialValue)
+                  break;
+                case 'tenThousand':
+                  this.formDataModel[wItem.options.name] = deepClone(initialValue) / 10000
+                  break;
+                case 'hundredMillion':
+                  this.formDataModel[wItem.options.name] = deepClone(initialValue) / 100000000
+                  break;
+              }
+            }else{
             this.formDataModel[wItem.options.name] = deepClone(initialValue)
+            }
           }
         }
       },
@@ -459,8 +474,29 @@
       },
 
       getFormData(needValidation = true) {
+        let data = deepClone(this.formDataModel)
+        if(this.widgetList[0].type=='grid'){
+          this.widgetList[0].cols.forEach(item=>{
+            if(!item.widgetList[0]?.options) return;
+            const options = item.widgetList[0]?.options
+            const type = item.widgetList[0]?.type
+            if(type == 'number'){
+              if(options.unit == 'tenThousand'){
+                data[options.name] = (data[options.name] * 10000)?.toString()
+              }
+              if(options.unit == 'hundredMillion'){
+                data[options.name] = (data[options.name] * 100000000)?.toString()
+              }else {
+                data[options.name] = (data[options.name])?.toString()
+              }
+            }
+            if(type == 'checkbox' || type == 'customCheckbox'){
+              data[options.name] = data[options.name].join(',')
+            }
+          })
+        }
         if (!needValidation) {
-          return this.formDataModel
+          return data
         }
 
         let callback = function nullFunc() {}
@@ -472,9 +508,9 @@
 
         this.$refs['renderForm'].validate((valid) => {
           if (valid) {
-            callback(this.formDataModel)
+            callback(data)
           } else {
-            callback(this.formDataModel, this.i18nt('render.hint.validationFailed'))
+            callback(data, this.i18nt('render.hint.validationFailed'))
           }
         })
 
@@ -487,7 +523,16 @@
             this.formDataModel[propName] = deepClone( formData[propName] )
           }
         })
-
+        if(this.widgetList[0].type=='grid'){
+          this.widgetList[0].cols.forEach(item=>{
+            if(item.widgetList[0].options.unit == 'tenThousand'){
+              this.formDataModel[item.widgetList[0].options.name] = this.formDataModel[item.widgetList[0].options.name] / 10000
+            }
+            if(item.widgetList[0].options.unit == 'hundredMillion'){
+              this.formDataModel[item.widgetList[0].options.name] = this.formDataModel[item.widgetList[0].options.name] / 100000000
+            }
+          })
+        }
         // 通知SubForm组件：表单数据更新事件！！
         this.broadcast('ContainerItem', 'setFormData', this.formDataModel)
         // 通知FieldWidget组件：表单数据更新事件！！
@@ -552,6 +597,7 @@
             }
           }
         })
+        this.disabled = true
       },
 
       enableForm() {
@@ -569,6 +615,7 @@
             }
           }
         })
+        this.disabled = false
       },
 
       resetForm() {  //重置表单
@@ -716,7 +763,7 @@
 </script>
 
 <style lang="scss" scoped>
-  .el-form :deep(.el-row) {
-    padding: 8px;
-  }
+  // .el-form :deep(.el-row) {
+  //   padding: 8px;
+  // }
 </style>

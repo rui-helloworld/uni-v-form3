@@ -93,7 +93,16 @@
     },
 
     methods: {
-
+      async initOptionItems(){
+        // 这里的$GETDICT;$HTTP;$CONFIG来自uni-web项目挂载的全局对象
+        let optionItems = this.field.options?.dictName ? this.$GETDICT(this.field.options.dictName) : []
+        if(this.field.options?.optionApi) {
+          const url = this.field.options.optionApi;
+          const res = await this.$HTTP.post(this.$CONFIG.API_URL + url, {});
+          optionItems = res.data || []
+        }
+        this.field.options.optionItems = optionItems
+      }
     }
   }
 </script>

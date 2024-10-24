@@ -9,7 +9,7 @@
 -->
 
 <template>
-  <el-container class="main-container full-height">
+  <el-container class="main-container full-height form-designer">
     <el-header class="main-header" v-if="false">
       <div class="float-left main-title">
         <img src="../../assets/vform-logo.png" @click="openHome">
@@ -280,6 +280,89 @@
         changeLocale(langName)
       },
 
+      setFormSetting(formSettingList) {
+        console.log("formSettingList",formSettingList);
+        let formSetting = JSON.parse(JSON.stringify(formSettingList))
+        let colJSON   //栅格JSON
+        let randomNumber = new Date().getTime()
+        let gridContainer = JSON.parse(JSON.stringify(CONS.find(it=>{return it.type == 'grid'})))
+        gridContainer.key = randomNumber
+        gridContainer.id = `grid${randomNumber}`
+        gridContainer.options.name = `grid${randomNumber}`
+        let formComposeType = null
+        if(!formSetting || !formSetting.length){
+          return this.$message.error('请配置至少一个字段!')
+        }
+        // 上次保留的栅格配置
+        if(formSetting[0].formComposeType){
+          formComposeType = JSON.parse(formSetting[0].formComposeType)
+        }
+        let cols = [];
+        if(formComposeType){
+          formComposeType.widgetList.forEach(widget => {
+              if (widget.type === "grid") {
+                const gridCols = widget.cols
+                gridCols.forEach(col => {
+                  if(col.type === 'grid-col'){
+                    cols.push(col);
+                  }
+                })
+                
+              }
+          });
+        }
+        let arr = formSetting.map((item,index)=>{
+          let obj = BFS.find(it=>{
+            if(it.type == item.type){
+              return it  
+            }
+          })
+          if(obj){
+            return obj
+          }else{
+            return BFS[0]
+          }
+        })
+        let formArr = JSON.parse(JSON.stringify(arr))
+        formArr.forEach((item,index)=>{
+          colJSON = JSON.parse(JSON.stringify(CONS.find(it=>{return it.type == 'grid-col'})))
+          const col = cols && cols[index] ? cols[index] : undefined
+          colJSON.id = col ?? `grid-col-${index}`
+          colJSON.options.name = `gridCol${index}`
+          item.key = index
+          item.id = `${item.type}${index}`
+          item.options.name = formSetting[index].prop
+          item.options.label = formSetting[index].label
+          item.options.unit = formSetting[index].fieldTypeUnit || 'one'
+          item.options.required = formSetting[index].required || true
+          item.options.requiredHint = "请输入"+formSetting[index].label
+          item.options.dictName = formSetting[index].dictName
+          item.options.optionApi = formSetting[index].optionApi
+          // 保留栅格配置(只是实现了按字段顺序保存下来的栅格，并不是真正的关联)
+          if(col){
+            colJSON.options = cols[index].options
+          } else {
+            colJSON.options.span = item.type == 'textarea' ? 24 : 12
+          }
+          colJSON.widgetList = [item]
+
+          gridContainer.cols.push(colJSON)
+        })
+        let formJson = {
+          "formConfig":{
+            "cssCode": formComposeType ? formComposeType.formConfig.cssCode : "",
+            "jsonVersion": formComposeType ? formComposeType.formConfig.jsonVersion : 3,
+            "labelAlign": formComposeType ? formComposeType.formConfig.labelAlign : "label-right-align",
+            "labelPosition": formComposeType ? formComposeType.formConfig.labelPosition : "left",
+            "labelWidth": formComposeType ? formComposeType.formConfig.labelWidth : 150,
+            "layoutType": formComposeType ? formComposeType.formConfig.layoutType : "PC",
+            "size": formComposeType ? formComposeType.formConfig.size : "large"
+          },
+          "widgetList":[gridContainer]
+        }
+        this.setFormJson(formJson)
+      },
+      
       setFormJson(formJson) {
         let modifiedFlag = false
         if (!!formJson) {

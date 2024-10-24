@@ -34,6 +34,25 @@
         </template>
       </draggable>
     </el-checkbox-group>
+    <el-checkbox-group v-else-if="selectedWidget.type === 'customCheckbox' || selectedWidget.type === 'radioInput'"
+                    v-model="optionModel.defaultValue" @change="emitDefaultValueChange">
+      <draggable tag="ul" :list="optionModel.optionItems" item-key="id"
+                 v-bind="{group:'optionsGroup', ghostClass: 'ghost', handle: '.drag-option'}">
+        <template #item="{ element: option, index: idx }">
+          <li>
+            <el-checkbox :label="option.value">
+              <!-- <el-input v-model="option.value" size="small" ></el-input>
+              <el-input v-model="option.label" size="small" style="width: 100px"></el-input> -->
+              <span style="width: 100px">{{ option.value }}</span>
+              <span style="width: 100px">{{ option.label }}</span>
+              <i class="iconfont icon-drag drag-option"></i>
+              <el-button circle plain size="small" type="danger" @click="deleteOption(option, idx)"
+                         icon="el-icon-minus" class="col-delete-button"></el-button>
+            </el-checkbox>
+          </li>
+        </template>
+      </draggable>
+    </el-checkbox-group>
     <div v-else-if="(selectedWidget.type === 'cascader')" class="full-width-input">
       <el-cascader v-model="optionModel.defaultValue" :options="optionModel.optionItems"
                    @change="emitDefaultValueChange"
@@ -50,7 +69,10 @@
       <el-button link type="primary" @click="importOptions">{{i18nt('designer.setting.importOptions')}}</el-button>
       <el-button link type="primary" @click="resetDefault">{{i18nt('designer.setting.resetDefault')}}</el-button>
     </div>
-
+    <div v-if="selectedWidget.type === 'customCheckbox' || selectedWidget.type === 'radioInput'">
+      <el-button link type="primary" @click="importOptions">{{i18nt('designer.setting.importOptions')}}</el-button>
+      <el-button link type="primary" @click="resetDefault">{{i18nt('designer.setting.resetDefault')}}</el-button>
+    </div>
     <div v-if="showImportDialogFlag" class="" v-drag="['.drag-dialog.el-dialog', '.drag-dialog .el-dialog__header']">
       <el-dialog :title="i18nt('designer.setting.importOptions')" v-model="showImportDialogFlag"
                  :show-close="true" class="drag-dialog small-padding-dialog" append-to-body

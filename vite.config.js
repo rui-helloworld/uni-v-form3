@@ -14,7 +14,7 @@ export default defineConfig({
 
     //添加jsx/tsx支持
     vueJsx({}),
-
+    commonjs({requireReturnsDefault: true}),  /* 配置requireReturnsDefault属性，
     /* 开启externalGlobals后，
        报错：TypeError: Cannot read properties of null (reading 'nodeType')，不知何故？？ */
     // externalGlobals({

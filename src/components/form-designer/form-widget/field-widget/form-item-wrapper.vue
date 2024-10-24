@@ -13,8 +13,8 @@
     <el-form-item v-if="!!field.formItemFlag && (!field.options.hidden || (designState === true))"
                   :label="label" :label-width="labelWidth + 'px'"
                   :title="field.options.labelTooltip"
-                  :rules="rules" :prop="getPropName()"
-                  :class="[selected ? 'selected' : '', labelAlign, customClass, field.options.required ? 'required' : '']"
+                  :rules="field.options.disabled ? [] : rules" :prop="getPropName()"
+                  :class="[selected ? 'selected' : '', labelAlign, (field.options.required && !field.options.disabled) ? 'required' : '']"
                   @click.stop="selectField(field)">
 
       <template #label>

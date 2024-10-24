@@ -127,4 +127,9 @@
       opacity: 0;
     }
   }
+  .grid-cell{
+    // border-top: 1px solid #000000;
+    // border-left: 1px solid #000000;
+    padding-top: 6px;
+  }
 </style>

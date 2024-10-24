@@ -1,5 +1,5 @@
 <template>
-  <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
+  <form-item-wrapper :designer="designer" :field="field" :rules="!field.options.disabled ? rules : []" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
     <el-input ref="fieldEditor" v-model="fieldModel"

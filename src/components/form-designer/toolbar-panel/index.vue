@@ -59,10 +59,10 @@
         </div>
         <template #footer>
           <div class="dialog-footer">
-            <el-button type="primary" @click="getFormData">{{i18nt('designer.hint.getFormData')}}</el-button>
-            <el-button type="primary" @click="resetForm">{{i18nt('designer.hint.resetForm')}}</el-button>
-            <el-button type="primary" @click="setFormDisabled">{{i18nt('designer.hint.disableForm')}}</el-button>
-            <el-button type="primary" @click="setFormEnabled">{{i18nt('designer.hint.enableForm')}}</el-button>
+            <el-button v-if="false" type="primary" @click="getFormData">{{i18nt('designer.hint.getFormData')}}</el-button>
+            <el-button v-if="false" type="primary" @click="resetForm">{{i18nt('designer.hint.resetForm')}}</el-button>
+            <el-button v-if="false" type="primary" @click="setFormDisabled">{{i18nt('designer.hint.disableForm')}}</el-button>
+            <el-button v-if="false" type="primary" @click="setFormEnabled">{{i18nt('designer.hint.enableForm')}}</el-button>
             <el-button @click="showPreviewDialogFlag = false">{{i18nt('designer.hint.closePreview')}}</el-button>
             <el-button v-if="false" @click="testLoadForm">Test Load</el-button>
             <el-button v-if="false" @click="testSetFormJson">Test SFJ</el-button>
